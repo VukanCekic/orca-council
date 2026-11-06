@@ -1,0 +1,71 @@
+{
+  "$schema": "https://raw.githubusercontent.com/stablyai/orca/main/docs/schemas/plugins/orca-plugin.v2.schema.json",
+  "manifestVersion": 2,
+  "id": "council",
+  "name": "Council",
+  "version": "0.5.0",
+  "description": "Ask a question in the Council panel: Claude, GPT (Codex) and Gemini (agy) answer blind, a blind Claude chair judges, and you watch it live in an Orca tab.",
+  "author": {
+    "name": "Vukan Cekic"
+  },
+  "license": "MIT",
+  "repository": "https://github.com/VukanCekic/orca-council",
+  "icon": "editor/img/chair.png",
+  "cover": {
+    "path": "docs/council-cover.jpg",
+    "alt": "Four fluted stone heads on columns: three members facing a taller fourth head whose eyes are covered by a stone band, the blind chair"
+  },
+  "screenshots": [
+    {
+      "path": "docs/council-orca-light-1280.png",
+      "alt": "The Council tab in Orca after a council: the verdict with what needs you, then Claude, GPT and Gemini's answers and the blind chair",
+      "caption": "The verdict, then each member's answer and the chair",
+      "theme": "light"
+    },
+    {
+      "path": "docs/council-verdict-1280.png",
+      "alt": "The Council tab in Orca's dark theme after a council: the verdict with what needs you, then Claude, GPT and Gemini's answers and the blind chair",
+      "caption": "The verdict, then each member's answer and the chair",
+      "theme": "dark"
+    }
+  ],
+  "engines": {
+    "orca": ">=1.4.248"
+  },
+  "execution": "trusted-worker",
+  "pluginApi": 1,
+  "main": "worker.mjs",
+  "contributes": {
+    "panels": [
+      {
+        "id": "ask",
+        "title": "Council",
+        "icon": "agent",
+        "entry": "panel/index.html"
+      }
+    ],
+    "customEditors": [
+      {
+        "id": "council-view",
+        "title": "Council",
+        "extensions": [
+          ".view"
+        ],
+        "entry": "editor/index.html",
+        "priority": "default",
+        "frame": "isolated"
+      }
+    ]
+  },
+  "capabilities": [
+    {
+      "kind": "workspace:read"
+    },
+    {
+      "kind": "terminal:send"
+    },
+    {
+      "kind": "workspace:write"
+    }
+  ]
+}

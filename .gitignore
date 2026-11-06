@@ -1,0 +1,6 @@
+node_modules/
+.orca/
+councils/
+preview/shots/
+*.tmp-*
+.env*

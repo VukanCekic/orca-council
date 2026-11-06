@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Council</title>
+<link rel="stylesheet" href="../editor/council.css">
+<link rel="stylesheet" href="panel.css">
+</head>
+<body>
+<main id="app" class="ask" aria-busy="true">
+  <header class="ah">
+    <span class="brand">Council</span>
+    <h1>Ask the council</h1>
+    <p class="lede">Claude, GPT and Gemini answer blind. A blind chair judges.</p>
+  </header>
+
+  <form id="f" class="box" autocomplete="off">
+    <label class="lbl" for="ws">Workspace</label>
+    <select id="ws" class="field"></select>
+    <p id="ws-note" class="note" hidden></p>
+
+    <label class="lbl" for="q">Question</label>
+    <textarea id="q" class="field" rows="4" placeholder="Should we put Redis in front of the orders API?" required></textarea>
+
+    <div class="modes" role="radiogroup" aria-label="Mode">
+      <label><input type="radio" name="mode" value="decision" checked><span>Decision</span></label>
+      <label><input type="radio" name="mode" value="deliverable"><span>Deliverable</span></label>
+      <label><input type="radio" name="mode" value="facts"><span>Facts</span></label>
+    </div>
+    <p id="mode-help" class="note">One clear recommendation, defended.</p>
+
+    <details class="more">
+      <summary>Context files <span class="mute">optional</span></summary>
+      <input id="ctx" class="field" placeholder="docs/plan.md, src/cache.ts">
+      <p class="note">Paths inside the workspace, comma separated. Each is given to every member.</p>
+    </details>
+
+    <label class="trial"><input id="dry" type="checkbox"> Trial run with stand-in models <span class="mute">free, about 45 s</span></label>
+
+    <button id="go" class="go" type="submit">Ask the council</button>
+    <p id="status" class="status" role="status" aria-live="polite"></p>
+    <p id="clis" class="clis"></p>
+  </form>
+
+  <section class="past" aria-labelledby="past-h">
+    <h2 id="past-h">Past councils <span id="past-n" class="mute num"></span></h2>
+    <ol id="past" class="rows"></ol>
+    <button id="more" class="btn" type="button" hidden></button>
+  </section>
+</main>
+<script src="panel.js"></script>
+</body>
+</html>

@@ -1,0 +1,272 @@
+/* Council tab (custom editor for *.view files), Orca Native look.
+   The token block between the markers is the "Orca Native" token set (Moving Still design system): Orca's live
+   theme values first, its default dark theme as the fallback. Only the font URL is local.
+   One question per view: "What did the panel decide, and who is still working?" Tier 1 is the verdict once it
+   exists, else the lanes. Status colour is only on marks, pills and the live ring. */
+
+/* tokens: start (Orca Native token set) */
+/* ---------- fallbacks: Orca's default dark theme (.dark in client.css) ---------- */
+:root, html.dark, [data-theme="dark"] {
+  --on-d-bg: #0a0a0a;        /* Orca --background */
+  --on-d-card: #171717;      /* Orca --card, --sidebar, --popover */
+  --on-d-raised: #262626;    /* Orca --secondary, --muted, --sidebar-accent (hover/selected row) */
+  --on-d-accent: #404040;    /* Orca --accent */
+  --on-d-fg: #f0f0f0;        /* Orca --foreground */
+  --on-d-mute: #acacac;      /* Orca --muted-foreground */
+  --on-d-line: #ffffff12;    /* Orca --border (7% white) */
+  --on-d-input: #ffffff26;   /* Orca --input (15% white) */
+  --on-d-ring: #737373;      /* Orca --ring */
+  --on-d-primary: #e5e5e5;   /* Orca --primary (the primary button is light grey, not a colour) */
+  --on-d-primary-fg: #171717;
+  --on-d-danger: #ff6568;    /* Orca --destructive (red-400) */
+
+  --on-term: #282c34;        /* Orca default terminal theme "Ghostty Default Style Dark" background */
+  --on-term-fg: #ffffff;
+  --on-term-dim: #8a919e;    /* derived: 5.0:1 on --on-term */
+  --on-editor: #1e1e1e;      /* Orca --editor-surface */
+
+  /* status. --x mark/fill, --x-fg text, --x-bg pale tint behind a pill or a row, --x-line its hairline.
+     Tint 10% and line 25% follow Orca's --status-success-background / -border recipe. */
+  --on-now: #fe6e00;   --on-now-fg: #ffb96d;   /* Orca --agent-question (orange-500) / --agent-question-text (orange-300) */
+  --on-soon: #eab308;  --on-soon-fg: #ecc54e;  /* Orca --status-warning; fg = Orca's --status-warning-text mix (70% + fg) */
+  --on-risk: #ff6568;  --on-risk-fg: #ff8a8c;  /* Orca --destructive; fg derived (lighter for small text) */
+  --on-ok: #00bb7f;    --on-ok-fg: #86efac;    /* Orca meter fill bg-emerald-500 / --status-success */
+  --on-plan: #54a2ff;  --on-plan-fg: #90c5ff;  /* Orca --terminal-pane-locate (blue-400) / blue-300 */
+  --on-wait: #737373;  --on-wait-fg: #acacac;  /* Orca --ring / --muted-foreground */
+  --on-work: #edb200;                          /* Orca --agent-working (yellow-500): the running spinner only */
+  --on-faint-mix: 78%; --on-dim-mix: 36%;      /* how far the derived tiers sit from the card, per scheme */
+  color-scheme: dark;
+}
+
+/* ---------- fallbacks: Orca's default light theme (:root in client.css) ---------- */
+html.light, [data-theme="light"] {
+  --on-d-bg: #ffffff;  --on-d-card: #ffffff;  --on-d-raised: #f5f5f5;  --on-d-accent: #f5f5f5;
+  --on-d-fg: #0a0a0a;  --on-d-mute: #696969;  --on-d-line: #e5e5e5;    --on-d-input: #e5e5e5;
+  --on-d-ring: #a1a1a1; --on-d-primary: #171717; --on-d-primary-fg: #fafafa; --on-d-danger: #e40014;
+  --on-term: #fafafa;  --on-term-fg: #2e3434;  --on-term-dim: #6b6f6f;  --on-editor: #ffffff;  /* Tango Light fg */
+
+  --on-now: #f05100;   --on-now-fg: #c53c00;   /* Orca light --agent-question (orange-600) / -text (orange-700) */
+  --on-soon: #b27c00;  --on-soon-fg: #8f6203;  /* derived from Orca light --status-warning #ca8a04 (2.9:1 mark, darkened to 3.6); fg = 70% mix */
+  --on-risk: #e40014;  --on-risk-fg: #bf000f;  /* Orca light --destructive (red-600) / red-700 */
+  --on-ok: #16a34a;    --on-ok-fg: #147638;    /* Orca --workspace-status-review / light --status-success */
+  --on-plan: #155dfc;  --on-plan-fg: #155dfc;  /* Orca light --terminal-pane-locate (blue-600) */
+  --on-wait: #8a8a8a;  --on-wait-fg: #696969;  /* derived (Orca light --ring #a1a1a1 is 2.6:1) / Orca --muted-foreground */
+  --on-work: #b27c00;                          /* derived: Orca's yellow is under 3:1 on white */
+  --on-faint-mix: 93%; --on-dim-mix: 46%;
+  color-scheme: light;
+}
+
+/* ---------- the tokens components use: Orca's live value first ---------- */
+:root {
+  --on-bg: var(--orca-background, var(--on-d-bg));
+  --on-card: var(--orca-card, var(--on-d-card));          /* panel / sidebar ground */
+  --on-raised: var(--orca-muted, var(--on-d-raised));     /* hover, selected row, chip ground, meter track */
+  --on-accent: var(--orca-accent, var(--on-d-accent));
+  --on-fg: var(--orca-foreground, var(--on-d-fg));
+  --on-mute: var(--orca-muted-foreground, var(--on-d-mute));
+  --on-line: var(--orca-border, var(--on-d-line));
+  --on-input: var(--orca-input, var(--on-d-input));
+  --on-ring: var(--orca-ring, var(--on-d-ring));
+  --on-primary: var(--orca-primary, var(--on-d-primary));
+  --on-primary-fg: var(--orca-primary-foreground, var(--on-d-primary-fg));
+  --on-danger: var(--orca-destructive, var(--on-d-danger));
+
+  /* derived tiers (the onorca.dev demo uses white at 88 / 72 / 58 / 48 / 42 %; 42 and 48 fail 4.5:1 on #171717,
+     so text stops at --on-faint). Measured on the card (gallery #2): faint 5.3:1 dark, 4.7:1 light; dim â‰ˆ3:1 */
+  --on-fg-2: color-mix(in srgb, var(--on-fg) 80%, var(--on-card));      /* secondary text */
+  --on-faint: color-mix(in srgb, var(--on-mute) var(--on-faint-mix), var(--on-card));  /* branch, time, meta */
+  --on-dim: color-mix(in srgb, var(--on-fg) var(--on-dim-mix), var(--on-card));        /* marks, idle dots, icons: never text */
+  --on-line-soft: color-mix(in srgb, var(--on-line) 60%, transparent);  /* Orca settings card: border-border/60 */
+  --on-line-row: color-mix(in srgb, var(--on-line) 40%, transparent);   /* Orca settings rows: divide-border/40 */
+  --on-inset: color-mix(in srgb, var(--on-fg) 2.5%, var(--on-card));    /* a card inside a card-coloured panel */
+  --on-hover: color-mix(in srgb, var(--on-fg) 5%, transparent);         /* row hover (Orca: hover:bg-accent/50) */
+
+  --on-now-bg: color-mix(in srgb, var(--on-now) 10%, transparent);   --on-now-line: color-mix(in srgb, var(--on-now) 25%, transparent);
+  --on-soon-bg: color-mix(in srgb, var(--on-soon) 10%, transparent); --on-soon-line: color-mix(in srgb, var(--on-soon) 25%, transparent);
+  --on-risk-bg: color-mix(in srgb, var(--on-risk) 10%, transparent); --on-risk-line: color-mix(in srgb, var(--on-risk) 25%, transparent);
+  --on-ok-bg: color-mix(in srgb, var(--on-ok) 10%, transparent);     --on-ok-line: color-mix(in srgb, var(--on-ok) 25%, transparent);
+  --on-plan-bg: color-mix(in srgb, var(--on-plan) 10%, transparent); --on-plan-line: color-mix(in srgb, var(--on-plan) 25%, transparent);
+  --on-wait-bg: color-mix(in srgb, var(--on-fg) 6%, transparent);    --on-wait-line: var(--on-line);
+
+  /* type. Orca: Geist for UI (bundled here, OFL), the system mono stack for code (Orca bundles no mono font) */
+  --on-sans: "Geist", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;          /* Orca --app-font-family */
+  --on-mono: "SF Mono", SFMono-Regular, ui-monospace, "Cascadia Code", "Cascadia Mono", Menlo, Consolas, "Liberation Mono", monospace; /* Orca --font-mono */
+  /* scale (px), from the classes Orca's Settings uses most: 10 micro (pill) Â· 11 meta (text-[11px]) Â·
+     12 helper (text-xs, 268 uses) Â· 13 row Â· 14 label (text-sm font-medium) Â· 18 section (text-lg semibold) Â·
+     24 page (text-2xl semibold). 13 is derived for dense sidebar rows. */
+  --on-fs-micro: 10px; --on-fs-meta: 11px; --on-fs-help: 12px; --on-fs-row: 13px; --on-fs-label: 14px;
+  --on-fs-h2: 18px; --on-fs-h1: 24px;
+  --on-fw: 400; --on-fw-med: 500; --on-fw-semi: 600;
+
+  /* shape and space. Orca --radius .625rem; md = .8Ã—, sm = .6Ã—, xl = 1.4Ã—, Tailwind 'rounded' = 4px */
+  --on-r: var(--orca-radius, .625rem);
+  --on-r-md: calc(var(--on-r) * .8); --on-r-sm: calc(var(--on-r) * .6); --on-r-xl: calc(var(--on-r) * 1.4);
+  --on-r-chip: 4px; --on-r-pill: 999px;
+  --on-sp: 4px;   /* Orca --spacing .25rem: every gap is a multiple */
+
+  /* motion. Orca --default-transition-duration .15s, timing cubic-bezier(.4,0,.2,1) */
+  --on-dur: .15s; --on-ease: cubic-bezier(.4, 0, .2, 1);
+
+  --on-hatch: repeating-linear-gradient(135deg, var(--on-line) 0 1px, transparent 1px 5px);  /* unknown, never blank */
+}
+
+@font-face {
+  font-family: "Geist";
+  src: url("fonts/Geist-Variable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+/* tokens: end */
+
+/* ---------- base */
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--on-bg); color: var(--on-fg); }
+body { font: var(--on-fw) var(--on-fs-row)/1.5 var(--on-sans); -webkit-font-smoothing: antialiased; }
+main { max-width: 1240px; margin: 0 auto; padding: 28px 32px 48px; }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid color-mix(in srgb, var(--on-ring) 70%, transparent); outline-offset: 2px; border-radius: var(--on-r-sm); }
+.num { font-variant-numeric: tabular-nums; }
+.mute { color: var(--on-faint); }
+.boot, .empty { color: var(--on-mute); padding: 40px 0; }
+
+.s-now  { --c: var(--on-now);  --cf: var(--on-now-fg);  --cb: var(--on-now-bg);  --cl: var(--on-now-line); }
+.s-soon { --c: var(--on-soon); --cf: var(--on-soon-fg); --cb: var(--on-soon-bg); --cl: var(--on-soon-line); }
+.s-risk { --c: var(--on-risk); --cf: var(--on-risk-fg); --cb: var(--on-risk-bg); --cl: var(--on-risk-line); }
+.s-ok   { --c: var(--on-ok);   --cf: var(--on-ok-fg);   --cb: var(--on-ok-bg);   --cl: var(--on-ok-line); }
+.s-work { --c: var(--on-work); --cf: var(--on-work);    --cb: color-mix(in srgb, var(--on-work) 10%, transparent); --cl: color-mix(in srgb, var(--on-work) 28%, transparent); }
+.s-wait { --c: var(--on-wait); --cf: var(--on-wait-fg); --cb: var(--on-wait-bg); --cl: var(--on-wait-line); }
+
+.pill { display: inline-flex; align-items: center; gap: 6px; height: 22px; padding: 0 9px; border-radius: var(--on-r-pill);
+  font-size: var(--on-fs-meta); font-weight: var(--on-fw-med); white-space: nowrap;
+  color: var(--cf, var(--on-mute)); background: var(--cb, var(--on-wait-bg)); border: 1px solid var(--cl, var(--on-line)); }
+.dot { width: 7px; height: 7px; border-radius: 50%; background: var(--c, var(--on-dim)); flex: none; }
+.spin { width: 11px; height: 11px; border-radius: 50%; flex: none; border: 2px solid color-mix(in srgb, var(--on-work) 30%, transparent);
+  border-top-color: var(--on-work); animation: spin .9s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ---------- header */
+.top { margin-bottom: 22px; }
+.brandrow { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+.brand { font-size: var(--on-fs-help); font-weight: var(--on-fw-semi); letter-spacing: .14em; text-transform: uppercase; color: var(--on-fg-2); margin-right: 4px; }
+/* The question is context, the verdict is the answer: at most 3 lines here (the full text is the tooltip and is in brief.md). */
+.q { font-size: 26px; line-height: 1.25; font-weight: var(--on-fw-semi); letter-spacing: -.01em; margin: 0 0 8px; max-width: 46ch; text-wrap: balance;
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3; overflow: hidden; white-space: pre-line; }
+.finding { font-size: var(--on-fs-label); color: var(--on-fg-2); margin: 0 0 4px; }
+.meta { font-size: var(--on-fs-help); color: var(--on-faint); }
+
+/* ---------- steps */
+.steps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; margin: 0 0 26px; padding: 0; list-style: none; }
+.step { position: relative; padding: 12px 10px 0 0; min-width: 0; }
+.step::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 3px; border-radius: 2px; background: var(--on-raised); }
+.step.done::before { background: color-mix(in srgb, var(--on-ok) 70%, var(--on-raised)); }
+.step.active::before { background: linear-gradient(90deg, var(--on-work) 0 var(--p, 50%), var(--on-raised) var(--p, 50%)); }
+.step.risk::before { background: color-mix(in srgb, var(--on-risk) 70%, var(--on-raised)); }
+.step + .step { margin-left: 8px; }
+.sn { font-size: var(--on-fs-meta); color: var(--on-faint); display: block; }
+.st { font-size: var(--on-fs-row); font-weight: var(--on-fw-med); color: var(--on-mute); display: flex; align-items: center; gap: 6px; }
+.step.done .st, .step.active .st { color: var(--on-fg); }
+.ss { font-size: var(--on-fs-meta); color: var(--on-faint); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
+
+/* ---------- verdict (tier 1 once it exists) */
+.hero { background: var(--on-card); border: 1px solid var(--on-line); border-radius: var(--on-r-xl); padding: 22px 24px 20px; margin: 0 0 22px;
+  box-shadow: inset 3px 0 0 var(--hero-c, var(--on-ok)); }
+.hero.reveal { animation: land .5s cubic-bezier(.23, 1, .32, 1); }
+.hk { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+.hk b { font-size: var(--on-fs-help); letter-spacing: .14em; text-transform: uppercase; font-weight: var(--on-fw-semi); color: var(--on-fg-2); margin-right: 4px; }
+.htl { font-size: 24px; line-height: 1.3; font-weight: var(--on-fw-semi); letter-spacing: -.01em; margin: 0 0 14px; max-width: 52ch; text-wrap: balance; }
+.fav { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin: 0 0 14px; font-size: var(--on-fs-label); color: var(--on-fg-2); }
+.flip { display: inline-flex; align-items: center; gap: 8px; height: 30px; padding: 0 12px 0 6px; border-radius: var(--on-r-pill);
+  background: var(--on-raised); border: 1px solid var(--on-line); color: var(--on-fg); font-weight: var(--on-fw-semi); }
+.flip .lab { width: 20px; height: 20px; border-radius: 50%; display: grid; place-items: center; font-size: var(--on-fs-meta);
+  background: var(--on-bg); border: 1px solid var(--on-line); }
+.flip .who { display: inline-flex; align-items: center; gap: 6px; }
+.reveal .flip .who { animation: whoin .6s .25s cubic-bezier(.23, 1, .32, 1) both; }
+@keyframes whoin { from { opacity: 0; transform: translateX(-6px); } to { opacity: 1; transform: none; } }
+.htx { margin: 0 0 16px; max-width: 75ch; color: var(--on-fg-2); }
+.needs { margin: 0 0 14px; padding: 12px 14px; border-radius: var(--on-r-md); background: var(--on-now-bg); border: 1px solid var(--on-now-line); }
+.needs h3 { margin: 0 0 6px; font-size: var(--on-fs-row); font-weight: var(--on-fw-semi); color: var(--on-now-fg); display: flex; align-items: center; gap: 7px; }
+.needs ul { margin: 0; padding-left: 18px; }
+.needs li { margin: 3px 0; }
+ul.sub { margin: 2px 0 4px; padding-left: 16px; color: var(--on-fg-2); list-style: circle; }
+ul.sub li { margin: 2px 0; }
+.more { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px 22px; }
+.more details { border-top: 1px solid var(--on-line-row); padding-top: 8px; }
+.more summary { cursor: pointer; font-weight: var(--on-fw-med); color: var(--on-fg-2); list-style: none; display: flex; align-items: center; gap: 6px; }
+.more summary::-webkit-details-marker { display: none; }
+.more summary::before { content: "›"; display: inline-block; transition: transform var(--on-dur) var(--on-ease); color: var(--on-faint); }
+.more details[open] summary::before { transform: rotate(90deg); }
+.more ul { margin: 6px 0 0; padding-left: 18px; color: var(--on-fg-2); }
+.more li { margin: 3px 0; }
+.warn { margin: 0 0 14px; padding: 0; list-style: none; font-size: var(--on-fs-help); color: var(--on-soon-fg); }
+
+/* ---------- member lanes */
+.lanes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 0 0 12px; }
+.lane { display: flex; flex-direction: column; min-width: 0; background: var(--on-card); border: 1px solid var(--on-line); border-radius: var(--on-r-xl); padding: 16px; }
+.lane.landed { animation: land .6s cubic-bezier(.23, 1, .32, 1); }
+@keyframes land { from { box-shadow: 0 0 0 2px var(--on-ok-line); transform: translateY(3px); } to { box-shadow: 0 0 0 0 transparent; transform: none; } }
+.lh { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.av { position: relative; width: 40px; height: 40px; border-radius: 50%; flex: none; display: grid; place-items: center;
+  background: var(--on-raised); color: var(--on-fg); }
+.logo { display: block; flex: none; }
+.is-live .av::after { content: ""; position: absolute; inset: -3px; border-radius: 50%; border: 2px solid var(--on-work); opacity: .9; animation: ring 1.6s ease-in-out infinite; }
+@keyframes ring { 50% { opacity: .25; } }
+.av .badge { position: absolute; right: -2px; bottom: -2px; width: 15px; height: 15px; border-radius: 50%; display: grid; place-items: center;
+  font-size: 9px; font-weight: 700; color: var(--on-bg); background: var(--c); border: 2px solid var(--on-card); }
+.who { min-width: 0; flex: 1; }
+.who b { display: block; font-size: var(--on-fs-label); font-weight: var(--on-fw-semi); }
+.who span { display: block; font-size: var(--on-fs-meta); color: var(--on-faint); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.lab { flex: none; }
+.t { font-size: var(--on-fs-help); color: var(--on-faint); font-variant-numeric: tabular-nums; flex: none; }
+.lstate { display: flex; align-items: center; gap: 7px; font-size: var(--on-fs-row); font-weight: var(--on-fw-med); color: var(--cf, var(--on-mute)); margin-bottom: 8px; }
+.ltl { font-size: 15px; line-height: 1.45; color: var(--on-fg); margin: 0 0 10px; }
+.ltl.k::before { content: "TL;DR  "; font-size: var(--on-fs-meta); font-weight: var(--on-fw-semi); letter-spacing: .06em; color: var(--on-faint); }
+.lsub { font-size: var(--on-fs-help); color: var(--on-faint); margin: 0 0 10px; }
+.tail { font-size: var(--on-fs-help); color: var(--on-mute); margin: 0 0 10px; border-left: 2px solid var(--on-line); padding-left: 10px;
+  display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; overflow: hidden; }
+.caret { display: inline-block; width: 7px; height: 13px; vertical-align: -2px; background: var(--on-work); margin-left: 2px; animation: blink 1s steps(1) infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+.lf { margin-top: auto; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.btn { height: 28px; padding: 0 10px; border-radius: var(--on-r-md); border: 1px solid var(--on-line); background: transparent; color: var(--on-fg-2);
+  font-size: var(--on-fs-help); cursor: pointer; transition: background var(--on-dur) var(--on-ease), transform .12s var(--on-ease); }
+.btn:hover { background: var(--on-hover); }
+.btn:active { transform: scale(.97); }
+.ans { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--on-line-row); font-size: var(--on-fs-row); color: var(--on-fg-2); overflow-wrap: anywhere; }
+.ans h4 { margin: 14px 0 4px; font-size: var(--on-fs-row); font-weight: var(--on-fw-semi); color: var(--on-fg); }
+.ans h4:first-child { margin-top: 0; }
+.ans p { margin: 4px 0 8px; }
+.ans ul, .ans ol { margin: 4px 0 8px; padding-left: 20px; }
+.ans li { margin: 2px 0; }
+.ans code { font-family: var(--on-mono); font-size: .92em; background: var(--on-raised); padding: 0 4px; border-radius: 3px; }
+.ans blockquote { margin: 6px 0; padding-left: 10px; border-left: 2px solid var(--on-line); color: var(--on-mute); }
+.is-fav { border-color: color-mix(in srgb, var(--on-ok) 45%, var(--on-line)); }
+
+/* ---------- chair */
+.chair { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 14px; align-items: start; background: var(--on-card);
+  border: 1px solid var(--on-line); border-radius: var(--on-r-xl); padding: 16px; }
+.av-chair { width: 48px; height: 48px; overflow: hidden; background: var(--on-bg); }
+.av-chair img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(1) brightness(.75); transition: filter .6s var(--on-ease); }
+.chair.on .av-chair img { filter: none; }
+.chair .who b { font-size: var(--on-fs-label); }
+.chair .ltl { margin: 6px 0 0; }
+.chair .lsub { margin: 6px 0 0; }
+.chair .lf { margin-top: 10px; justify-content: flex-start; }
+.err { padding: 18px 20px; border-radius: var(--on-r-xl); background: var(--on-card); border: 1px solid var(--on-line); }
+.err b { display: block; margin-bottom: 4px; }
+
+/* ---------- widths: the tab is the viewport */
+@media (max-width: 900px) {
+  main { padding: 20px 18px 36px; }
+  .q { font-size: 22px; }
+  .htl { font-size: 20px; }
+}
+@media (max-width: 760px) {
+  .lanes { grid-template-columns: minmax(0, 1fr); }
+  .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 12px; }
+  .step:nth-child(3) { margin-left: 0; }
+  .chair { grid-template-columns: auto minmax(0, 1fr); }
+  .chair > .t { grid-column: 2; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
